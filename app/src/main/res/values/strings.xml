@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FinanceApp</string>
+    <string name="widget_description">Виджет для быстрого просмотра финансов</string>
+</resources>
