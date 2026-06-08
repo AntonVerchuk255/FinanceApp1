@@ -2,27 +2,14 @@ package com.example.financeapp.unit_tests.viewmodel
 
 
 import android.content.Context
-import com.example.financeapp.data.Category
-import com.example.financeapp.data.CategoryDao
-import com.example.financeapp.data.Transaction
-import com.example.financeapp.data.TransactionDao
-import com.example.financeapp.data.TransactionType
+import com.example.financeapp.data.*
 import com.example.financeapp.ui.transactions.TransactionsViewModel
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.Runs
-import io.mockk.coEvery
-import kotlinx.coroutines.Dispatchers
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -36,6 +23,7 @@ class TransactionsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
+
     private lateinit var transactionDao: TransactionDao
     private lateinit var categoryDao: CategoryDao
     private lateinit var context: Context
@@ -55,34 +43,32 @@ class TransactionsViewModelTest {
         transactionDao = mockk(relaxed = true)
         categoryDao = mockk(relaxed = true)
         context = mockk(relaxed = true)
+
         every { transactionDao.getAllTransactions() } returns flowOf(sampleTransactions)
         every { categoryDao.getAllCategories() } returns flowOf(emptyList())
+
+        // Не мокаем WidgetUpdater, так как в unit-тестах он не вызывается из-за isReturnDefaultValues = true
+
         viewModel = TransactionsViewModel(transactionDao, categoryDao, context)
     }
 
     @After
     fun tearDown() {
-        Dispatchers.resetMain()
+        clearAllMocks()
     }
 
     @Test
-    fun `no filter returns all transactions`() = runTest {
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+    fun noFilter_returnsAllTransactions() = runTest {
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         assertEquals(3, viewModel.uiState.value.transactions.size)
         job.cancel()
     }
 
     @Test
-    fun `filter EXPENSE excludes income transactions`() = runTest {
+    fun filterExpense_excludesIncomeTransactions() = runTest {
         viewModel.setFilter(TransactionType.EXPENSE)
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         val result = viewModel.uiState.value.transactions
         assertEquals(2, result.size)
@@ -91,12 +77,9 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `filter INCOME shows only income transactions`() = runTest {
+    fun filterIncome_showsOnlyIncomeTransactions() = runTest {
         viewModel.setFilter(TransactionType.INCOME)
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         val result = viewModel.uiState.value.transactions
         assertEquals(1, result.size)
@@ -105,12 +88,9 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `removing filter shows all transactions again`() = runTest {
+    fun removingFilter_showsAllTransactionsAgain() = runTest {
         viewModel.setFilter(TransactionType.EXPENSE)
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         viewModel.setFilter(null)
         advanceUntilIdle()
@@ -119,7 +99,7 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `deleteTransaction calls dao delete exactly once`() = runTest {
+    fun deleteTransaction_callsDaoDeleteExactlyOnce() = runTest {
         val tx = sampleTransactions[0]
         coEvery { transactionDao.delete(tx) } just Runs
         viewModel.deleteTransaction(tx)
@@ -128,7 +108,7 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `addTransaction calls dao insert with correct amount in kopecks`() = runTest {
+    fun addTransaction_callsDaoInsertWithCorrectAmountInKopecks() = runTest {
         coEvery { transactionDao.insert(any()) } just Runs
         viewModel.addTransaction(
             type = TransactionType.EXPENSE,
@@ -142,7 +122,7 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `categories from dao are exposed in uiState`() = runTest {
+    fun categoriesFromDao_areExposedInUiState() = runTest {
         val categories = listOf(
             Category(id = 1, name = "Еда", type = TransactionType.EXPENSE,
                 iconRes = null, colorHex = "#FF0000"),
@@ -151,35 +131,29 @@ class TransactionsViewModelTest {
         )
         every { categoryDao.getAllCategories() } returns flowOf(categories)
         viewModel = TransactionsViewModel(transactionDao, categoryDao, context)
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         assertEquals(2, viewModel.uiState.value.categories.size)
         job.cancel()
     }
 
     @Test
-    fun `initial filterType is null`() = runTest {
+    fun initialFilterType_isNull() = runTest {
         advanceUntilIdle()
         assertEquals(null, viewModel.uiState.value.filterType)
     }
 
     @Test
-    fun `filter EXPENSE reflects in uiState filterType`() = runTest {
+    fun filterExpense_reflectsInUiStateFilterType() = runTest {
         viewModel.setFilter(TransactionType.EXPENSE)
-        val job = launch {
-            viewModel.uiState.collect {}
-        }
-
+        val job = launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
         assertEquals(TransactionType.EXPENSE, viewModel.uiState.value.filterType)
         job.cancel()
     }
 
     @Test
-    fun `empty transaction list with filter returns empty list`() = runTest {
+    fun emptyTransactionListWithFilter_returnsEmptyList() = runTest {
         every { transactionDao.getAllTransactions() } returns flowOf(emptyList())
         viewModel = TransactionsViewModel(transactionDao, categoryDao, context)
         viewModel.setFilter(TransactionType.EXPENSE)
@@ -188,7 +162,7 @@ class TransactionsViewModelTest {
     }
 
     @Test
-    fun `updateTransaction calls dao update`() = runTest {
+    fun updateTransaction_callsDaoUpdate() = runTest {
         val tx = sampleTransactions[0]
         coEvery { transactionDao.update(tx) } just Runs
         viewModel.updateTransaction(tx)
