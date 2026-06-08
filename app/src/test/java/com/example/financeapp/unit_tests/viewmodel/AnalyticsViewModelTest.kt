@@ -20,6 +20,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -27,9 +28,11 @@ import java.time.temporal.ChronoUnit
 @OptIn(ExperimentalCoroutinesApi::class)
 class AnalyticsViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
     private lateinit var dao: TransactionDao
     private lateinit var viewModel: AnalyticsViewModel
+
 
     private val sampleExpenseCategories = listOf(
         CategorySum(name = "Еда", total = 12_000_00L),
@@ -43,7 +46,7 @@ class AnalyticsViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
+        //Dispatchers.setMain(testDispatcher)
         dao = mockk(relaxed = true)
         every { dao.getCategoryDistributionByPeriod(TransactionType.EXPENSE, any(), any()) } returns
                 flowOf(sampleExpenseCategories)
@@ -62,7 +65,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `expense categories are loaded correctly`() = runTest(testDispatcher.scheduler) {
+    fun `expense categories are loaded correctly`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -72,7 +75,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `income categories are loaded correctly`() = runTest(testDispatcher.scheduler) {
+    fun `income categories are loaded correctly`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -83,7 +86,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `totalExpense is set from dao`() = runTest(testDispatcher.scheduler) {
+    fun `totalExpense is set from dao`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -94,7 +97,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `totalIncome is set from dao`() = runTest(testDispatcher.scheduler) {
+    fun `totalIncome is set from dao`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -105,13 +108,13 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `default selectedType is EXPENSE`() = runTest(testDispatcher.scheduler) {
+    fun `default selectedType is EXPENSE`() = runTest {
         advanceUntilIdle()
         assertEquals(TransactionType.EXPENSE, viewModel.chartState.value.selectedType)
     }
 
     @Test
-    fun `setSelectedType changes selectedType to INCOME`() = runTest(testDispatcher.scheduler) {
+    fun `setSelectedType changes selectedType to INCOME`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -124,7 +127,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `expense categories are sorted by total descending`() = runTest(testDispatcher.scheduler) {
+    fun `expense categories are sorted by total descending`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -138,7 +141,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `updatePeriod triggers data reload`() = runTest(testDispatcher.scheduler) {
+    fun `updatePeriod triggers data reload`() = runTest {
         val job = launch {
             viewModel.chartState.collect {}
         }
@@ -154,7 +157,7 @@ class AnalyticsViewModelTest {
     }
 
     @Test
-    fun `empty expense categories returns empty list`() = runTest(testDispatcher.scheduler) {
+    fun `empty expense categories returns empty list`() = runTest {
         every { dao.getCategoryDistributionByPeriod(TransactionType.EXPENSE, any(), any()) } returns
                 flowOf(emptyList())
         viewModel = AnalyticsViewModel(dao)

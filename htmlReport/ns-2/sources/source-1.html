@@ -64,10 +64,10 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">AppDatabase$Companion</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/2)
   </span>
 </td>
 <td class="coverageStat">
@@ -80,21 +80,105 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    16,7%
   </span>
   <span class="absValue">
-    (0/4)
+    (1/6)
   </span>
 </td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$0te2qB70</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$48vWIrzv</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$77kNX7sq</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$9l8mPED3</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$9rkowRvV</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$B4Ovevu9</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$fzz2uhVc</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$GhPrFpNG</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$gL2P17Zx</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$HwAlDZRu</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$I7SvbFCZ</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$ImvtnSd3</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$Li02tXoS</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$lwZ7tPqe</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$LYVHwSdo</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$plY6Q2tP</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$px3ahf7q</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$RbrKzumN</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$TJAXIRbU</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$TlMb8Rq3</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$TzHvLuUa</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$VLkhwFIZ</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$vmUwnrkJ</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$W1Xo576E</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$W3QyG3e4</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$X1H1iFKt</td>
+  </tr>
+  <tr>
+    <td class="name">AppDatabase$Subclass6$auxiliary$yas2x00F</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    33,3%
   </span>
   <span class="absValue">
-    (0/2)
+    (1/3)
   </span>
 </td>
 <td class="coverageStat">
@@ -107,10 +191,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    14,3%
   </span>
   <span class="absValue">
-    (0/5)
+    (1/7)
   </span>
 </td>
 </tr>
@@ -150,7 +234,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    abstract fun goalDao(): GoalDao
 &nbsp;    abstract fun reminderDao(): ReminderDao
 &nbsp;
-&nbsp;    companion object {
+<b class="fc">&nbsp;    companion object {</b>
 &nbsp;        @Volatile private var INSTANCE: AppDatabase? = null
 &nbsp;
 &nbsp;        fun getInstance(context: Context): AppDatabase =
@@ -158,7 +242,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;                Room.databaseBuilder(context, AppDatabase::class.java, &quot;finance.db&quot;)</b>
 <b class="nc">&nbsp;                    .fallbackToDestructiveMigration() // ← сбрасывает БД при смене версии</b>
 <b class="nc">&nbsp;                    .build().also { INSTANCE = it }</b>
-&nbsp;            }
+<b class="nc">&nbsp;            }</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -184,7 +268,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 19:15</div>
+    <div style="float:right;">generated on 2026-06-08 20:15</div>
 </div>
 </body>
 </html>

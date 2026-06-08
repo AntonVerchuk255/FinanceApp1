@@ -27,13 +27,15 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TransactionsViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
     private lateinit var transactionDao: TransactionDao
     private lateinit var categoryDao: CategoryDao
     private lateinit var context: Context
@@ -50,7 +52,6 @@ class TransactionsViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
         transactionDao = mockk(relaxed = true)
         categoryDao = mockk(relaxed = true)
         context = mockk(relaxed = true)

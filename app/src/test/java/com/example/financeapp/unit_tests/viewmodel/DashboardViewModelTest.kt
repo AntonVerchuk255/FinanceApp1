@@ -18,19 +18,20 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
     private lateinit var dao: TransactionDao
     private lateinit var viewModel: DashboardViewModel
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
         dao = mockk(relaxed = true)
     }
 

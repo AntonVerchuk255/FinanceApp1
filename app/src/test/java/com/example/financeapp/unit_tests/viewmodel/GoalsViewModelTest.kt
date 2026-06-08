@@ -21,13 +21,15 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GoalsViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
     private lateinit var goalDao: GoalDao
     private lateinit var viewModel: GoalsViewModel
 
@@ -40,7 +42,6 @@ class GoalsViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
         goalDao = mockk(relaxed = true)
         every { goalDao.getAllGoals() } returns flowOf(sampleGoals)
         viewModel = GoalsViewModel(goalDao)

@@ -7,6 +7,7 @@ import com.example.financeapp.data.CategoryDao
 import com.example.financeapp.data.PeriodType
 import com.example.financeapp.data.TransactionDao
 import com.example.financeapp.data.TransactionType
+import com.example.financeapp.ui.analytics.ComparisonViewModel
 import com.example.financeapp.ui.budgets.BudgetsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,12 +27,14 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BudgetsViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
     private lateinit var budgetDao: BudgetDao
     private lateinit var transactionDao: TransactionDao
     private lateinit var categoryDao: CategoryDao
@@ -45,7 +48,6 @@ class BudgetsViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
         budgetDao = mockk(relaxed = true)
         transactionDao = mockk(relaxed = true)
         categoryDao = mockk(relaxed = true)
@@ -79,14 +81,14 @@ class BudgetsViewModelTest {
 
     @Test
     fun `addBudget calls dao insert`() = runTest {
-        coEvery { budgetDao.insert(any()) } just Runs
-        viewModel.addBudget(
-            categoryId = 1L,
-            limitAmount = 10_000_00L,
-            periodType = PeriodType.MONTHLY
-        )
+        coEvery { budgetDao.insert(any()) } answers {
+            // просто заглушка
+        }
+        viewModel.addBudget(categoryId = 42L, limitAmount = 1000L, periodType = PeriodType.MONTHLY)
         advanceUntilIdle()
-        coVerify(exactly = 1) { budgetDao.insert(any()) }
+        coVerify {
+            budgetDao.insert(match { it.categoryId == 42L && it.limitAmount == 1000L })
+        }
     }
 
     @Test

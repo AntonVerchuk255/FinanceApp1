@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > ReminderDao</title>
+  <title>Coverage Report > BudgetDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,16 +22,31 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.example.financeapp.data</a>
 </div>
 
-<h1>Coverage Summary for Class: ReminderDao (com.example.financeapp.data)</h1>
+<h1>Coverage Summary for Class: BudgetDao (com.example.financeapp.data)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
 </tr>
+  <tr>
+    <td class="name">BudgetDao$Subclass2</td>
+  </tr>
+  <tr>
+    <td class="name">BudgetDao$Subclass2$auxiliary$c74WbbWd</td>
+  </tr>
+  <tr>
+    <td class="name">BudgetDao$Subclass2$auxiliary$i2Zl4Fnn</td>
+  </tr>
+  <tr>
+    <td class="name">BudgetDao$Subclass2$auxiliary$oCWa9bUN</td>
+  </tr>
+  <tr>
+    <td class="name">BudgetDao$Subclass2$auxiliary$x720R2Xq</td>
+  </tr>
 <tr>
-  <td class="name">ReminderDao</td>
+  <td class="name"><strong>Total</strong></td>
 </tr>
-
 </table>
 
 <br/>
@@ -45,24 +60,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import kotlinx.coroutines.flow.Flow
 &nbsp;
 &nbsp;@Dao
-&nbsp;interface ReminderDao {
+&nbsp;interface BudgetDao {
 &nbsp;    @Insert(onConflict = OnConflictStrategy.REPLACE)
-&nbsp;    suspend fun insert(reminder: Reminder)
+&nbsp;    suspend fun insert(budget: Budget)
 &nbsp;
 &nbsp;    @Update
-&nbsp;    suspend fun update(reminder: Reminder)
+&nbsp;    suspend fun update(budget: Budget)
 &nbsp;
 &nbsp;    @Delete
-&nbsp;    suspend fun delete(reminder: Reminder)
+&nbsp;    suspend fun delete(budget: Budget)
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders ORDER BY dayOfMonth ASC&quot;)
-&nbsp;    fun getAllReminders(): Flow&lt;List&lt;Reminder&gt;&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets&quot;)
+&nbsp;    fun getAllBudgets(): Flow&lt;List&lt;Budget&gt;&gt;
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders WHERE isActive = 1 AND dayOfMonth = :day&quot;)
-&nbsp;    suspend fun getActiveRemindersByDay(day: Int): List&lt;Reminder&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets WHERE categoryId = :categoryId LIMIT 1&quot;)
+&nbsp;    suspend fun getBudgetByCategory(categoryId: Long): Budget?
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders&quot;)
-&nbsp;    suspend fun getAllRemindersOnce(): List&lt;Reminder&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets&quot;)
+&nbsp;    suspend fun getAllBudgetsOnce(): List&lt;Budget&gt;
+&nbsp;
+&nbsp;    @Query(&quot;DELETE FROM budgets&quot;)
+&nbsp;    suspend fun deleteAll()
 &nbsp;}
 </code>
 </pre>
@@ -87,7 +105,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 19:15</div>
+    <div style="float:right;">generated on 2026-06-08 20:15</div>
 </div>
 </body>
 </html>
