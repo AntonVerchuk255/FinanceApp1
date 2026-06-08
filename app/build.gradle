@@ -83,8 +83,6 @@ dependencies {
     // Тестирование — instrumented tests (Room DAO)
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
     androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.room:room-testing:2.6.1"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-test:1.9.23"

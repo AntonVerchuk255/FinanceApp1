@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > ReminderDao</title>
+  <title>Coverage Report > GoalDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,7 +22,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.example.financeapp.data</a>
 </div>
 
-<h1>Coverage Summary for Class: ReminderDao (com.example.financeapp.data)</h1>
+<h1>Coverage Summary for Class: GoalDao (com.example.financeapp.data)</h1>
 
 <table class="coverageStats">
 
@@ -30,19 +30,19 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">ReminderDao$Subclass6</td>
+    <td class="name">GoalDao$Subclass5</td>
   </tr>
   <tr>
-    <td class="name">ReminderDao$Subclass6$auxiliary$17k2Qdb0</td>
+    <td class="name">GoalDao$Subclass5$auxiliary$b6C73kA8</td>
   </tr>
   <tr>
-    <td class="name">ReminderDao$Subclass6$auxiliary$c3ajbFkl</td>
+    <td class="name">GoalDao$Subclass5$auxiliary$kYMlUP0I</td>
   </tr>
   <tr>
-    <td class="name">ReminderDao$Subclass6$auxiliary$gFQim5lI</td>
+    <td class="name">GoalDao$Subclass5$auxiliary$ln60FqiU</td>
   </tr>
   <tr>
-    <td class="name">ReminderDao$Subclass6$auxiliary$L0VRVt2I</td>
+    <td class="name">GoalDao$Subclass5$auxiliary$RHRyf2I1</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -60,24 +60,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import kotlinx.coroutines.flow.Flow
 &nbsp;
 &nbsp;@Dao
-&nbsp;interface ReminderDao {
+&nbsp;interface GoalDao {
 &nbsp;    @Insert(onConflict = OnConflictStrategy.REPLACE)
-&nbsp;    suspend fun insert(reminder: Reminder)
+&nbsp;    suspend fun insert(goal: Goal)
 &nbsp;
 &nbsp;    @Update
-&nbsp;    suspend fun update(reminder: Reminder)
+&nbsp;    suspend fun update(goal: Goal)
 &nbsp;
 &nbsp;    @Delete
-&nbsp;    suspend fun delete(reminder: Reminder)
+&nbsp;    suspend fun delete(goal: Goal)
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders ORDER BY dayOfMonth ASC&quot;)
-&nbsp;    fun getAllReminders(): Flow&lt;List&lt;Reminder&gt;&gt;
+&nbsp;    @Query(&quot;SELECT * FROM goals ORDER BY createdAt DESC&quot;)
+&nbsp;    fun getAllGoals(): Flow&lt;List&lt;Goal&gt;&gt;
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders WHERE isActive = 1 AND dayOfMonth = :day&quot;)
-&nbsp;    suspend fun getActiveRemindersByDay(day: Int): List&lt;Reminder&gt;
+&nbsp;    @Query(&quot;UPDATE goals SET currentAmount = currentAmount + :amount WHERE id = :goalId&quot;)
+&nbsp;    suspend fun addToGoal(goalId: Long, amount: Long)
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM reminders&quot;)
-&nbsp;    suspend fun getAllRemindersOnce(): List&lt;Reminder&gt;
+&nbsp;    @Query(&quot;SELECT * FROM goals&quot;)
+&nbsp;    suspend fun getAllGoalsOnce(): List&lt;Goal&gt;
+&nbsp;
+&nbsp;    @Query(&quot;DELETE FROM goals&quot;)
+&nbsp;    suspend fun deleteAll()
 &nbsp;}
 </code>
 </pre>
@@ -102,7 +105,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 20:50</div>
+    <div style="float:right;">generated on 2026-06-08 22:09</div>
 </div>
 </body>
 </html>

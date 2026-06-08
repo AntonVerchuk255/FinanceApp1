@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > TransactionDao</title>
+  <title>Coverage Report > BudgetDao</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,7 +22,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.example.financeapp.data</a>
 </div>
 
-<h1>Coverage Summary for Class: TransactionDao (com.example.financeapp.data)</h1>
+<h1>Coverage Summary for Class: BudgetDao (com.example.financeapp.data)</h1>
 
 <table class="coverageStats">
 
@@ -30,22 +30,19 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">TransactionDao$DefaultImpls</td>
+    <td class="name">BudgetDao$Subclass2</td>
   </tr>
   <tr>
-    <td class="name">TransactionDao$Subclass0</td>
+    <td class="name">BudgetDao$Subclass2$auxiliary$8QE2CAhI</td>
   </tr>
   <tr>
-    <td class="name">TransactionDao$Subclass0$auxiliary$edVZ0mzO</td>
+    <td class="name">BudgetDao$Subclass2$auxiliary$Aj9zCbbV</td>
   </tr>
   <tr>
-    <td class="name">TransactionDao$Subclass0$auxiliary$INYAhq3m</td>
+    <td class="name">BudgetDao$Subclass2$auxiliary$ic1ORLSn</td>
   </tr>
   <tr>
-    <td class="name">TransactionDao$Subclass0$auxiliary$mcGNTuCJ</td>
-  </tr>
-  <tr>
-    <td class="name">TransactionDao$Subclass0$auxiliary$pr3nHr7y</td>
+    <td class="name">BudgetDao$Subclass2$auxiliary$kTAc3WUW</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -61,112 +58,29 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import androidx.room.*
 &nbsp;import kotlinx.coroutines.flow.Flow
-&nbsp;import java.time.Instant
 &nbsp;
 &nbsp;@Dao
-&nbsp;interface TransactionDao {
+&nbsp;interface BudgetDao {
 &nbsp;    @Insert(onConflict = OnConflictStrategy.REPLACE)
-&nbsp;    suspend fun insert(transaction: Transaction)
+&nbsp;    suspend fun insert(budget: Budget)
 &nbsp;
 &nbsp;    @Update
-&nbsp;    suspend fun update(transaction: Transaction)
+&nbsp;    suspend fun update(budget: Budget)
 &nbsp;
 &nbsp;    @Delete
-&nbsp;    suspend fun delete(transaction: Transaction)
+&nbsp;    suspend fun delete(budget: Budget)
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions ORDER BY date DESC, createdAt DESC&quot;)
-&nbsp;    fun getAllTransactions(): Flow&lt;List&lt;Transaction&gt;&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets&quot;)
+&nbsp;    fun getAllBudgets(): Flow&lt;List&lt;Budget&gt;&gt;
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions ORDER BY date DESC, createdAt DESC LIMIT :limit&quot;)
-&nbsp;    fun getRecentTransactions(limit: Int = 5): Flow&lt;List&lt;Transaction&gt;&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets WHERE categoryId = :categoryId LIMIT 1&quot;)
+&nbsp;    suspend fun getBudgetByCategory(categoryId: Long): Budget?
 &nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions WHERE date BETWEEN :start AND :end ORDER BY date DESC, createdAt DESC&quot;)
-&nbsp;    fun getTransactionsByPeriod(start: Instant, end: Instant): Flow&lt;List&lt;Transaction&gt;&gt;
+&nbsp;    @Query(&quot;SELECT * FROM budgets&quot;)
+&nbsp;    suspend fun getAllBudgetsOnce(): List&lt;Budget&gt;
 &nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;        SELECT SUM(amount) FROM transactions 
-&nbsp;        WHERE type = :type AND date BETWEEN :start AND :end
-&nbsp;    &quot;&quot;&quot;)
-&nbsp;    fun getSumByTypeAndPeriod(
-&nbsp;        type: TransactionType,
-&nbsp;        start: Instant,
-&nbsp;        end: Instant
-&nbsp;    ): Flow&lt;Long?&gt;
-&nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;        SELECT c.name, SUM(t.amount) as total 
-&nbsp;        FROM transactions t 
-&nbsp;        JOIN categories c ON t.categoryId = c.id 
-&nbsp;        WHERE t.type = :type AND t.date BETWEEN :start AND :end 
-&nbsp;        GROUP BY t.categoryId ORDER BY total DESC
-&nbsp;    &quot;&quot;&quot;)
-&nbsp;    fun getCategoryDistributionByPeriod(
-&nbsp;        type: TransactionType,
-&nbsp;        start: Instant,
-&nbsp;        end: Instant
-&nbsp;    ): Flow&lt;List&lt;CategorySum&gt;&gt;
-&nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;        SELECT SUM(amount) FROM transactions
-&nbsp;        WHERE type = &#39;INCOME&#39;
-&nbsp;    &quot;&quot;&quot;)
-&nbsp;    fun getTotalIncome(): Flow&lt;Long?&gt;
-&nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;        SELECT SUM(amount) FROM transactions
-&nbsp;        WHERE type = &#39;EXPENSE&#39;
-&nbsp;    &quot;&quot;&quot;)
-&nbsp;    fun getTotalExpense(): Flow&lt;Long?&gt;
-&nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions&quot;)
-&nbsp;    suspend fun getAllTransactionsOnce(): List&lt;Transaction&gt;
-&nbsp;
-&nbsp;    @Query(&quot;DELETE FROM transactions&quot;)
+&nbsp;    @Query(&quot;DELETE FROM budgets&quot;)
 &nbsp;    suspend fun deleteAll()
-&nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;    SELECT strftime(&#39;%Y-%m&#39;, datetime(date/1000, &#39;unixepoch&#39;)) as month,
-&nbsp;    SUM(amount) as total
-&nbsp;    FROM transactions
-&nbsp;    WHERE type = :type
-&nbsp;    GROUP BY month
-&nbsp;    ORDER BY month DESC
-&nbsp;    LIMIT 12
-&nbsp;&quot;&quot;&quot;)
-&nbsp;    fun getMonthlyTotals(type: TransactionType): Flow&lt;List&lt;MonthlyTotal&gt;&gt;
-&nbsp;
-&nbsp;    @Query(&quot;&quot;&quot;
-&nbsp;    SELECT c.name, SUM(t.amount) as total
-&nbsp;    FROM transactions t
-&nbsp;    JOIN categories c ON t.categoryId = c.id
-&nbsp;    WHERE t.type = :type AND t.date BETWEEN :start AND :end
-&nbsp;    GROUP BY t.categoryId ORDER BY total DESC
-&nbsp;&quot;&quot;&quot;)
-&nbsp;    suspend fun getCategoryTotalsOnce(
-&nbsp;        type: TransactionType,
-&nbsp;        start: Instant,
-&nbsp;        end: Instant
-&nbsp;    ): List&lt;CategorySum&gt;
-&nbsp;
-&nbsp;    @Query(&quot;SELECT SUM(amount) FROM transactions WHERE type = :type AND date BETWEEN :start AND :end&quot;)
-&nbsp;    suspend fun getSumByTypeAndPeriodOnce(
-&nbsp;        type: TransactionType,
-&nbsp;        start: Instant,
-&nbsp;        end: Instant
-&nbsp;    ): Long?
-&nbsp;
-&nbsp;    @Query(&quot;SELECT SUM(amount) FROM transactions WHERE type = &#39;INCOME&#39;&quot;)
-&nbsp;    suspend fun getTotalIncomeOnce(): Long?
-&nbsp;
-&nbsp;    @Query(&quot;SELECT SUM(amount) FROM transactions WHERE type = &#39;EXPENSE&#39;&quot;)
-&nbsp;    suspend fun getTotalExpenseOnce(): Long?
-&nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions ORDER BY date DESC, createdAt DESC LIMIT :limit&quot;)
-&nbsp;    suspend fun getRecentTransactionsOnce(limit: Int): List&lt;Transaction&gt;
-&nbsp;
-&nbsp;    @Query(&quot;SELECT * FROM transactions WHERE date BETWEEN :start AND :end ORDER BY date DESC, createdAt DESC&quot;)
-&nbsp;    suspend fun getTransactionsByPeriodOnce(start: Instant, end: Instant): List&lt;Transaction&gt;
-&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -191,7 +105,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 20:50</div>
+    <div style="float:right;">generated on 2026-06-08 22:09</div>
 </div>
 </body>
 </html>
