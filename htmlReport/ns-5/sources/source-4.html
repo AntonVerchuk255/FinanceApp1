@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ComparisonViewModelFactory</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.ui.analytics</a>
+</div>
+
+<h1>Coverage Summary for Class: ComparisonViewModelFactory (com.example.financeapp.ui.analytics)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ComparisonViewModelFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.ui.analytics
+&nbsp;
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.ViewModelProvider
+&nbsp;import androidx.lifecycle.viewModelScope
+&nbsp;import com.example.financeapp.data.CategorySum
+&nbsp;import com.example.financeapp.data.MonthlyTotal
+&nbsp;import com.example.financeapp.data.TransactionDao
+&nbsp;import com.example.financeapp.data.TransactionType
+&nbsp;import kotlinx.coroutines.flow.*
+&nbsp;import kotlinx.coroutines.launch
+&nbsp;import java.time.Instant
+&nbsp;import java.time.YearMonth
+&nbsp;import java.time.ZoneId
+&nbsp;import java.time.temporal.ChronoUnit
+&nbsp;
+&nbsp;data class PeriodStats(
+&nbsp;    val totalIncome: Long = 0L,
+&nbsp;    val totalExpense: Long = 0L,
+&nbsp;    val expenseCategories: List&lt;CategorySum&gt; = emptyList(),
+&nbsp;    val incomeCategories: List&lt;CategorySum&gt; = emptyList()
+&nbsp;)
+&nbsp;
+&nbsp;data class ComparisonUiState(
+&nbsp;    val currentPeriod: PeriodStats = PeriodStats(),
+&nbsp;    val previousPeriod: PeriodStats = PeriodStats(),
+&nbsp;    val monthlyTotalsExpense: List&lt;MonthlyTotal&gt; = emptyList(),
+&nbsp;    val monthlyTotalsIncome: List&lt;MonthlyTotal&gt; = emptyList(),
+&nbsp;    val currentLabel: String = &quot;Этот месяц&quot;,
+&nbsp;    val previousLabel: String = &quot;Прошлый месяц&quot;,
+&nbsp;    val selectedType: TransactionType = TransactionType.EXPENSE
+&nbsp;)
+&nbsp;
+&nbsp;class ComparisonViewModel(private val dao: TransactionDao) : ViewModel() {
+&nbsp;
+&nbsp;    private val _selectedType = MutableStateFlow(TransactionType.EXPENSE)
+&nbsp;    private val _comparisonState = MutableStateFlow(ComparisonUiState())
+&nbsp;    val uiState: StateFlow&lt;ComparisonUiState&gt; = _comparisonState
+&nbsp;
+&nbsp;    init {
+&nbsp;        loadComparison()
+&nbsp;        viewModelScope.launch {
+&nbsp;            combine(
+&nbsp;                dao.getMonthlyTotals(TransactionType.EXPENSE),
+&nbsp;                dao.getMonthlyTotals(TransactionType.INCOME),
+&nbsp;                _selectedType
+&nbsp;            ) { expense, income, type -&gt;
+&nbsp;                Triple(expense, income, type)
+&nbsp;            }.collect { (expense, income, type) -&gt;
+&nbsp;                _comparisonState.update {
+&nbsp;                    it.copy(
+&nbsp;                        monthlyTotalsExpense = expense,
+&nbsp;                        monthlyTotalsIncome = income,
+&nbsp;                        selectedType = type
+&nbsp;                    )
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun loadComparison() {
+&nbsp;        viewModelScope.launch {
+&nbsp;            val zone = ZoneId.systemDefault()
+&nbsp;            val now = YearMonth.now()
+&nbsp;            val prev = now.minusMonths(1)
+&nbsp;
+&nbsp;            val currentStart = now.atDay(1).atStartOfDay(zone).toInstant()
+&nbsp;            val currentEnd = now.atEndOfMonth().atTime(23, 59, 59).atZone(zone).toInstant()
+&nbsp;            val prevStart = prev.atDay(1).atStartOfDay(zone).toInstant()
+&nbsp;            val prevEnd = prev.atEndOfMonth().atTime(23, 59, 59).atZone(zone).toInstant()
+&nbsp;
+&nbsp;            val currentExpenseCats = dao.getCategoryTotalsOnce(
+&nbsp;                TransactionType.EXPENSE, currentStart, currentEnd)
+&nbsp;            val currentIncomeCats = dao.getCategoryTotalsOnce(
+&nbsp;                TransactionType.INCOME, currentStart, currentEnd)
+&nbsp;            val prevExpenseCats = dao.getCategoryTotalsOnce(
+&nbsp;                TransactionType.EXPENSE, prevStart, prevEnd)
+&nbsp;            val prevIncomeCats = dao.getCategoryTotalsOnce(
+&nbsp;                TransactionType.INCOME, prevStart, prevEnd)
+&nbsp;
+&nbsp;            _comparisonState.update {
+&nbsp;                it.copy(
+&nbsp;                    currentPeriod = PeriodStats(
+&nbsp;                        totalIncome = currentIncomeCats.sumOf { c -&gt; c.total },
+&nbsp;                        totalExpense = currentExpenseCats.sumOf { c -&gt; c.total },
+&nbsp;                        expenseCategories = currentExpenseCats,
+&nbsp;                        incomeCategories = currentIncomeCats
+&nbsp;                    ),
+&nbsp;                    previousPeriod = PeriodStats(
+&nbsp;                        totalIncome = prevIncomeCats.sumOf { c -&gt; c.total },
+&nbsp;                        totalExpense = prevExpenseCats.sumOf { c -&gt; c.total },
+&nbsp;                        expenseCategories = prevExpenseCats,
+&nbsp;                        incomeCategories = prevIncomeCats
+&nbsp;                    ),
+&nbsp;                    currentLabel = &quot;${now.month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale(&quot;ru&quot;))} ${now.year}&quot;,
+&nbsp;                    previousLabel = &quot;${prev.month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale(&quot;ru&quot;))} ${prev.year}&quot;
+&nbsp;                )
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun setSelectedType(type: TransactionType) {
+&nbsp;        _selectedType.value = type
+&nbsp;        _comparisonState.update { it.copy(selectedType = type) }
+&nbsp;    }
+&nbsp;}
+&nbsp;
+<b class="nc">&nbsp;class ComparisonViewModelFactory(</b>
+<b class="nc">&nbsp;    private val dao: TransactionDao</b>
+&nbsp;) : ViewModelProvider.Factory {
+&nbsp;    override fun &lt;T : androidx.lifecycle.ViewModel&gt; create(modelClass: Class&lt;T&gt;): T {
+&nbsp;        @Suppress(&quot;UNCHECKED_CAST&quot;)
+<b class="nc">&nbsp;        return ComparisonViewModel(dao) as T</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,325 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FinanceWidgetReceiver</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.widget</a>
+</div>
+
+<h1>Coverage Summary for Class: FinanceWidgetReceiver (com.example.financeapp.widget)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FinanceWidgetReceiver</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.widget
+&nbsp;
+&nbsp;import android.content.Context
+&nbsp;import androidx.compose.runtime.Composable
+&nbsp;import androidx.compose.ui.graphics.Color
+&nbsp;import androidx.compose.ui.unit.dp
+&nbsp;import androidx.compose.ui.unit.sp
+&nbsp;import androidx.glance.*
+&nbsp;import androidx.glance.action.actionStartActivity
+&nbsp;import androidx.glance.appwidget.GlanceAppWidget
+&nbsp;import androidx.glance.appwidget.GlanceAppWidgetReceiver
+&nbsp;import androidx.glance.appwidget.provideContent
+&nbsp;import androidx.glance.layout.*
+&nbsp;import androidx.glance.text.*
+&nbsp;import androidx.glance.background
+&nbsp;import androidx.glance.color.ColorProvider
+&nbsp;import com.example.financeapp.MainActivity
+&nbsp;import com.example.financeapp.data.AppDatabase
+&nbsp;import com.example.financeapp.data.TransactionType
+&nbsp;import com.example.financeapp.ui.dashboard.formatAmount
+&nbsp;import java.time.Instant
+&nbsp;import java.time.temporal.ChronoUnit
+&nbsp;import androidx.glance.GlanceModifier
+&nbsp;import androidx.glance.action.clickable
+&nbsp;import androidx.glance.layout.fillMaxSize
+&nbsp;import androidx.glance.layout.padding
+&nbsp;import androidx.glance.layout.fillMaxWidth
+&nbsp;import androidx.glance.layout.Column
+&nbsp;import androidx.glance.layout.Row
+&nbsp;import androidx.glance.layout.Spacer
+&nbsp;import androidx.glance.layout.height
+&nbsp;
+&nbsp;class FinanceWidget : GlanceAppWidget() {
+&nbsp;
+&nbsp;    override suspend fun provideGlance(context: Context, id: GlanceId) {
+&nbsp;        val db = AppDatabase.getInstance(context)
+&nbsp;        val dao = db.transactionDao()
+&nbsp;
+&nbsp;        val now = Instant.now()
+&nbsp;        val monthStart = now.minus(30, ChronoUnit.DAYS)
+&nbsp;
+&nbsp;        val monthIncome = dao.getSumByTypeAndPeriodOnce(
+&nbsp;            TransactionType.INCOME, monthStart, now) ?: 0L
+&nbsp;        val monthExpense = dao.getSumByTypeAndPeriodOnce(
+&nbsp;            TransactionType.EXPENSE, monthStart, now) ?: 0L
+&nbsp;        val balance = (dao.getTotalIncomeOnce() ?: 0L) - (dao.getTotalExpenseOnce() ?: 0L)
+&nbsp;        val recentTransactions = dao.getRecentTransactionsOnce(3)
+&nbsp;        val categories = db.categoryDao().getAllCategoriesOnce()
+&nbsp;
+&nbsp;        provideContent {
+&nbsp;            WidgetContent(
+&nbsp;                balance = balance,
+&nbsp;                monthIncome = monthIncome,
+&nbsp;                monthExpense = monthExpense,
+&nbsp;                recentTransactions = recentTransactions.map { t -&gt;
+&nbsp;                    TransactionWidgetItem(
+&nbsp;                        categoryName = categories.find { it.id == t.categoryId }?.name ?: &quot;—&quot;,
+&nbsp;                        amount = t.amount,
+&nbsp;                        type = t.type
+&nbsp;                    )
+&nbsp;                }
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;data class TransactionWidgetItem(
+&nbsp;    val categoryName: String,
+&nbsp;    val amount: Long,
+&nbsp;    val type: TransactionType
+&nbsp;)
+&nbsp;
+&nbsp;@Composable
+&nbsp;fun WidgetContent(
+&nbsp;    balance: Long,
+&nbsp;    monthIncome: Long,
+&nbsp;    monthExpense: Long,
+&nbsp;    recentTransactions: List&lt;TransactionWidgetItem&gt;
+&nbsp;) {
+&nbsp;    Column(
+&nbsp;        modifier = GlanceModifier
+&nbsp;            .fillMaxSize()
+&nbsp;            .background(Color.White)
+&nbsp;            .padding(12.dp)
+&nbsp;            .clickable(onClick = actionStartActivity&lt;MainActivity&gt;()),
+&nbsp;        verticalAlignment = Alignment.Top
+&nbsp;    ) {
+&nbsp;        // Заголовок
+&nbsp;        Text(
+&nbsp;            text = &quot;Финансы&quot;,
+&nbsp;            style = TextStyle(
+&nbsp;                fontSize = 13.sp,
+&nbsp;                fontWeight = FontWeight.Bold,
+&nbsp;                color = androidx.glance.unit.ColorProvider(Color(0xFF6200EE))
+&nbsp;            )
+&nbsp;        )
+&nbsp;
+&nbsp;        Spacer(modifier = GlanceModifier.height(8.dp))
+&nbsp;
+&nbsp;        // Баланс
+&nbsp;        Text(
+&nbsp;            text = &quot;Баланс&quot;,
+&nbsp;            style = TextStyle(
+&nbsp;                fontSize = 11.sp,
+&nbsp;                color = androidx.glance.unit.ColorProvider(Color.Gray)
+&nbsp;            )
+&nbsp;        )
+&nbsp;        Text(
+&nbsp;            text = formatAmount(balance),
+&nbsp;            style = TextStyle(
+&nbsp;                fontSize = 20.sp,
+&nbsp;                fontWeight = FontWeight.Bold,
+&nbsp;                color = androidx.glance.unit.ColorProvider(Color.Black)
+&nbsp;            )
+&nbsp;        )
+&nbsp;
+&nbsp;        Spacer(modifier = GlanceModifier.height(8.dp))
+&nbsp;
+&nbsp;        // Доходы и расходы за месяц
+&nbsp;        Row(modifier = GlanceModifier.fillMaxWidth()) {
+&nbsp;            Column(modifier = GlanceModifier.defaultWeight()) {
+&nbsp;                Text(
+&nbsp;                    text = &quot;Доходы&quot;,
+&nbsp;                    style = TextStyle(
+&nbsp;                        fontSize = 10.sp,
+&nbsp;                        color = androidx.glance.unit.ColorProvider(Color.Gray)
+&nbsp;                    )
+&nbsp;                )
+&nbsp;                Text(
+&nbsp;                    text = formatAmount(monthIncome),
+&nbsp;                    style = TextStyle(
+&nbsp;                        fontSize = 12.sp,
+&nbsp;                        fontWeight = FontWeight.Bold,
+&nbsp;                        color = androidx.glance.unit.ColorProvider(Color(0xFF00C853))
+&nbsp;                    )
+&nbsp;                )
+&nbsp;            }
+&nbsp;            Column(modifier = GlanceModifier.defaultWeight()) {
+&nbsp;                Text(
+&nbsp;                    text = &quot;Расходы&quot;,
+&nbsp;                    style = TextStyle(
+&nbsp;                        fontSize = 10.sp,
+&nbsp;                        color = androidx.glance.unit.ColorProvider(Color.Gray)
+&nbsp;                    )
+&nbsp;                )
+&nbsp;                Text(
+&nbsp;                    text = formatAmount(monthExpense),
+&nbsp;                    style = TextStyle(
+&nbsp;                        fontSize = 12.sp,
+&nbsp;                        fontWeight = FontWeight.Bold,
+&nbsp;                        color = androidx.glance.unit.ColorProvider(Color(0xFFD50000))
+&nbsp;                    )
+&nbsp;                )
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        Spacer(modifier = GlanceModifier.height(10.dp))
+&nbsp;
+&nbsp;        // Последние транзакции
+&nbsp;        if (recentTransactions.isNotEmpty()) {
+&nbsp;            Text(
+&nbsp;                text = &quot;Последние операции&quot;,
+&nbsp;                style = TextStyle(
+&nbsp;                    fontSize = 10.sp,
+&nbsp;                    color = androidx.glance.unit.ColorProvider(Color.Gray)
+&nbsp;                )
+&nbsp;            )
+&nbsp;            Spacer(modifier = GlanceModifier.height(4.dp))
+&nbsp;
+&nbsp;            recentTransactions.forEach { item -&gt;
+&nbsp;                val color = when (item.type) {
+&nbsp;                    TransactionType.INCOME -&gt; Color(0xFF00C853)
+&nbsp;                    TransactionType.EXPENSE -&gt; Color(0xFFD50000)
+&nbsp;                    TransactionType.TRANSFER -&gt; Color(0xFF2979FF)
+&nbsp;                }
+&nbsp;                val sign = when (item.type) {
+&nbsp;                    TransactionType.INCOME -&gt; &quot;+&quot;
+&nbsp;                    TransactionType.EXPENSE -&gt; &quot;-&quot;
+&nbsp;                    TransactionType.TRANSFER -&gt; &quot;&quot;
+&nbsp;                }
+&nbsp;
+&nbsp;                Row(
+&nbsp;                    modifier = GlanceModifier
+&nbsp;                        .fillMaxWidth()
+&nbsp;                        .padding(vertical = 2.dp),
+&nbsp;                    horizontalAlignment = Alignment.Horizontal.End
+&nbsp;                ) {
+&nbsp;                    Text(
+&nbsp;                        text = item.categoryName,
+&nbsp;                        style = TextStyle(
+&nbsp;                            fontSize = 11.sp,
+&nbsp;                            color = androidx.glance.unit.ColorProvider(Color.Black)
+&nbsp;                        ),
+&nbsp;                        modifier = GlanceModifier.defaultWeight()
+&nbsp;                    )
+&nbsp;                    Text(
+&nbsp;                        text = &quot;$sign${formatAmount(item.amount)}&quot;,
+&nbsp;                        style = TextStyle(
+&nbsp;                            fontSize = 11.sp,
+&nbsp;                            fontWeight = FontWeight.Bold,
+&nbsp;                            color = androidx.glance.unit.ColorProvider(color)
+&nbsp;                        )
+&nbsp;                    )
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        Spacer(modifier = GlanceModifier.defaultWeight())
+&nbsp;
+&nbsp;        // Кнопка добавить
+&nbsp;        Button(
+&nbsp;            text = &quot;+ Добавить&quot;,
+&nbsp;            onClick = actionStartActivity&lt;MainActivity&gt;(),
+&nbsp;            modifier = GlanceModifier.fillMaxWidth()
+&nbsp;        )
+&nbsp;    }
+&nbsp;}
+&nbsp;
+<b class="nc">&nbsp;class FinanceWidgetReceiver : GlanceAppWidgetReceiver() {</b>
+<b class="nc">&nbsp;    override val glanceAppWidget: GlanceAppWidget = FinanceWidget()</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>

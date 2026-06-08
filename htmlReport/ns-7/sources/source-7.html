@@ -1,0 +1,206 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PieChartKt</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.ui.charts</a>
+</div>
+
+<h1>Coverage Summary for Class: PieChartKt (com.example.financeapp.ui.charts)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PieChartKt</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PieChartKt$PieChart$1</td>
+  </tr>
+  <tr>
+    <td class="name">PieChartKt$PieChart$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PieChartKt$PieChart$3</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.ui.charts
+&nbsp;
+&nbsp;import androidx.compose.foundation.Canvas
+&nbsp;import androidx.compose.foundation.layout.fillMaxSize
+&nbsp;import androidx.compose.runtime.Composable
+&nbsp;import androidx.compose.ui.Modifier
+&nbsp;import androidx.compose.ui.geometry.Offset
+&nbsp;import androidx.compose.ui.geometry.Size
+&nbsp;import androidx.compose.ui.graphics.Color
+&nbsp;import androidx.compose.ui.graphics.drawscope.Stroke
+&nbsp;
+&nbsp;data class PieChartData(
+&nbsp;    val label: String,
+&nbsp;    val value: Double,
+&nbsp;    val color: Color
+&nbsp;)
+&nbsp;
+&nbsp;@Composable
+&nbsp;fun PieChart(
+&nbsp;    data: List&lt;PieChartData&gt;,
+<b class="nc">&nbsp;    modifier: Modifier = Modifier</b>
+<b class="nc">&nbsp;) {</b>
+<b class="nc">&nbsp;    if (data.isEmpty()) return</b>
+&nbsp;
+<b class="nc">&nbsp;    val total = data.sumOf { it.value }</b>
+&nbsp;
+<b class="nc">&nbsp;    Canvas(modifier = modifier.fillMaxSize()) {</b>
+<b class="nc">&nbsp;        val diameter = minOf(size.width, size.height) * 0.9f</b>
+<b class="nc">&nbsp;        val topLeft = Offset(</b>
+<b class="nc">&nbsp;            x = (size.width - diameter) / 2f,</b>
+<b class="nc">&nbsp;            y = (size.height - diameter) / 2f</b>
+&nbsp;        )
+<b class="nc">&nbsp;        val arcSize = Size(diameter, diameter)</b>
+<b class="nc">&nbsp;        var startAngle = -90f</b>
+&nbsp;
+<b class="nc">&nbsp;        data.forEach { slice -&gt;</b>
+<b class="nc">&nbsp;            val sweepAngle = (slice.value / total * 360).toFloat()</b>
+<b class="nc">&nbsp;            drawArc(</b>
+<b class="nc">&nbsp;                color = slice.color,</b>
+<b class="nc">&nbsp;                startAngle = startAngle,</b>
+<b class="nc">&nbsp;                sweepAngle = sweepAngle,</b>
+<b class="nc">&nbsp;                useCenter = false,</b>
+<b class="nc">&nbsp;                topLeft = topLeft,</b>
+<b class="nc">&nbsp;                size = arcSize,</b>
+<b class="nc">&nbsp;                style = Stroke(width = diameter * 0.18f)</b>
+&nbsp;            )
+<b class="nc">&nbsp;            startAngle += sweepAngle</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    // ❌ toolVersion НЕ указываем в AGP 8+
+}
+
+tasks.withType(Test).configureEach {
+    useJUnit()
+    finalizedBy jacocoTestReport
+}
+
+tasks.register("jacocoTestReport", JacocoReport) {
+
+    dependsOn "testDebugUnitTest"
+
+    group = "verification"
+    description = "Generates Jacoco coverage report for unit tests"
+
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = false
+    }
+
+    def debugTree = fileTree(dir: "$buildDir/tmp/kotlin-classes/debug") {
+        exclude(
+                '**/R.class',
+                '**/R$*.class',
+                '**/BuildConfig.*',
+                '**/Manifest*.*',
+                '**/*$lambda$*',
+                '**/*Companion*'
+        )
+    }
+
+    classDirectories.setFrom(files(debugTree))
+
+    sourceDirectories.setFrom(files([
+            "src/main/java",
+            "src/main/kotlin"
+    ]))
+
+    executionData.setFrom(fileTree(dir: buildDir).include(
+            "jacoco/testDebugUnitTest.exec"
+    ))
+}
+
+jacocoTestReport {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}

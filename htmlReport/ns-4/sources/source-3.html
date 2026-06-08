@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ChartUiState</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.ui</a>
+</div>
+
+<h1>Coverage Summary for Class: ChartUiState (com.example.financeapp.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChartUiState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.ui
+&nbsp;
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.ViewModelProvider
+&nbsp;import androidx.lifecycle.viewModelScope
+&nbsp;import com.example.financeapp.data.CategorySum
+&nbsp;import com.example.financeapp.data.TransactionDao
+&nbsp;import com.example.financeapp.data.TransactionType
+&nbsp;import kotlinx.coroutines.flow.*
+&nbsp;import kotlinx.coroutines.launch
+&nbsp;import java.time.Instant
+&nbsp;import java.time.temporal.ChronoUnit
+&nbsp;
+&nbsp;data class TimelinePoint(val date: Instant, val amount: Long)
+&nbsp;
+&nbsp;data class ChartUiState(
+<b class="fc">&nbsp;    val expenseCategories: List&lt;CategorySum&gt; = emptyList(),</b>
+<b class="fc">&nbsp;    val incomeCategories: List&lt;CategorySum&gt; = emptyList(),</b>
+<b class="fc">&nbsp;    val timeline: List&lt;TimelinePoint&gt; = emptyList(),</b>
+<b class="fc">&nbsp;    val totalExpense: Long = 0L,</b>
+<b class="fc">&nbsp;    val totalIncome: Long = 0L,</b>
+<b class="fc">&nbsp;    val selectedType: TransactionType = TransactionType.EXPENSE</b>
+<b class="fc">&nbsp;)</b>
+&nbsp;
+&nbsp;class AnalyticsViewModel(private val dao: TransactionDao) : ViewModel() {
+&nbsp;
+&nbsp;    private val _periodStart = MutableStateFlow(Instant.now().minus(30, ChronoUnit.DAYS))
+&nbsp;    private val _periodEnd = MutableStateFlow(Instant.now())
+&nbsp;    private val _selectedType = MutableStateFlow(TransactionType.EXPENSE)
+&nbsp;
+&nbsp;    val chartState: StateFlow&lt;ChartUiState&gt; = combine(
+&nbsp;        _periodStart,
+&nbsp;        _periodEnd,
+&nbsp;        _selectedType
+&nbsp;    ) { start, end, type -&gt;
+&nbsp;        Triple(start, end, type)
+&nbsp;    }.flatMapLatest { (start, end, type) -&gt;
+&nbsp;        combine(
+&nbsp;            dao.getCategoryDistributionByPeriod(TransactionType.EXPENSE, start, end),
+&nbsp;            dao.getCategoryDistributionByPeriod(TransactionType.INCOME, start, end),
+&nbsp;            dao.getSumByTypeAndPeriod(TransactionType.EXPENSE, start, end),
+&nbsp;            dao.getSumByTypeAndPeriod(TransactionType.INCOME, start, end)
+&nbsp;        ) { expenseCats, incomeCats, totalExp, totalInc -&gt;
+&nbsp;            ChartUiState(
+&nbsp;                expenseCategories = expenseCats,
+&nbsp;                incomeCategories = incomeCats,
+&nbsp;                totalExpense = totalExp ?: 0L,
+&nbsp;                totalIncome = totalInc ?: 0L,
+&nbsp;                selectedType = type
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }.stateIn(
+&nbsp;        scope = viewModelScope,
+&nbsp;        started = SharingStarted.WhileSubscribed(5000),
+&nbsp;        initialValue = ChartUiState()
+&nbsp;    )
+&nbsp;
+&nbsp;    fun updatePeriod(start: Instant, end: Instant) {
+&nbsp;        _periodStart.value = start
+&nbsp;        _periodEnd.value = end
+&nbsp;    }
+&nbsp;
+&nbsp;    fun setSelectedType(type: TransactionType) {
+&nbsp;        _selectedType.value = type
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;class AnalyticsViewModelFactory(
+&nbsp;    private val dao: TransactionDao
+&nbsp;) : ViewModelProvider.Factory {
+&nbsp;    override fun &lt;T : androidx.lifecycle.ViewModel&gt; create(modelClass: Class&lt;T&gt;): T {
+&nbsp;        @Suppress(&quot;UNCHECKED_CAST&quot;)
+&nbsp;        return AnalyticsViewModel(dao) as T
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>

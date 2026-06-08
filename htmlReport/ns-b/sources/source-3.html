@@ -1,0 +1,258 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RemindersViewModel</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.ui.reminders</a>
+</div>
+
+<h1>Coverage Summary for Class: RemindersViewModel (com.example.financeapp.ui.reminders)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RemindersViewModel</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RemindersViewModel$addReminder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">RemindersViewModel$deleteReminder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">RemindersViewModel$toggleReminder$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">RemindersViewModel$uiState$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.ui.reminders
+&nbsp;
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.ViewModelProvider
+&nbsp;import androidx.lifecycle.viewModelScope
+&nbsp;import com.example.financeapp.data.Category
+&nbsp;import com.example.financeapp.data.CategoryDao
+&nbsp;import com.example.financeapp.data.Reminder
+&nbsp;import com.example.financeapp.data.ReminderDao
+&nbsp;import kotlinx.coroutines.flow.*
+&nbsp;import kotlinx.coroutines.launch
+&nbsp;
+&nbsp;data class RemindersUiState(
+&nbsp;    val reminders: List&lt;Reminder&gt; = emptyList(),
+&nbsp;    val categories: List&lt;Category&gt; = emptyList()
+&nbsp;)
+&nbsp;
+&nbsp;class RemindersViewModel(
+<b class="nc">&nbsp;    private val reminderDao: ReminderDao,</b>
+<b class="nc">&nbsp;    private val categoryDao: CategoryDao</b>
+<b class="nc">&nbsp;) : ViewModel() {</b>
+&nbsp;
+<b class="nc">&nbsp;    val uiState: StateFlow&lt;RemindersUiState&gt; = combine(</b>
+<b class="nc">&nbsp;        reminderDao.getAllReminders(),</b>
+<b class="nc">&nbsp;        categoryDao.getAllCategories()</b>
+&nbsp;    ) { reminders, categories -&gt;
+<b class="nc">&nbsp;        RemindersUiState(reminders = reminders, categories = categories)</b>
+<b class="nc">&nbsp;    }.stateIn(</b>
+<b class="nc">&nbsp;        scope = viewModelScope,</b>
+<b class="nc">&nbsp;        started = SharingStarted.WhileSubscribed(5000),</b>
+<b class="nc">&nbsp;        initialValue = RemindersUiState()</b>
+&nbsp;    )
+&nbsp;
+&nbsp;    fun addReminder(
+&nbsp;        title: String,
+&nbsp;        amount: Long,
+&nbsp;        categoryId: Long?,
+&nbsp;        dayOfMonth: Int
+&nbsp;    ) {
+<b class="nc">&nbsp;        viewModelScope.launch {</b>
+<b class="nc">&nbsp;            reminderDao.insert(</b>
+<b class="nc">&nbsp;                Reminder(</b>
+<b class="nc">&nbsp;                    title = title,</b>
+<b class="nc">&nbsp;                    amount = amount,</b>
+<b class="nc">&nbsp;                    categoryId = categoryId,</b>
+<b class="nc">&nbsp;                    dayOfMonth = dayOfMonth</b>
+&nbsp;                )
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun toggleReminder(reminder: Reminder) {
+<b class="nc">&nbsp;        viewModelScope.launch {</b>
+<b class="nc">&nbsp;            reminderDao.update(reminder.copy(isActive = !reminder.isActive))</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun deleteReminder(reminder: Reminder) {
+<b class="nc">&nbsp;        viewModelScope.launch { reminderDao.delete(reminder) }</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;class RemindersViewModelFactory(
+&nbsp;    private val reminderDao: ReminderDao,
+&nbsp;    private val categoryDao: CategoryDao
+&nbsp;) : ViewModelProvider.Factory {
+&nbsp;    override fun &lt;T : androidx.lifecycle.ViewModel&gt; create(modelClass: Class&lt;T&gt;): T {
+&nbsp;        @Suppress(&quot;UNCHECKED_CAST&quot;)
+&nbsp;        return RemindersViewModel(reminderDao, categoryDao) as T
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>

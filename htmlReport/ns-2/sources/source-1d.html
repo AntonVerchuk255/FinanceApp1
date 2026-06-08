@@ -1,0 +1,111 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GoalDao</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.financeapp.data</a>
+</div>
+
+<h1>Coverage Summary for Class: GoalDao (com.example.financeapp.data)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">GoalDao$Subclass4</td>
+  </tr>
+  <tr>
+    <td class="name">GoalDao$Subclass4$auxiliary$EjNzg7VF</td>
+  </tr>
+  <tr>
+    <td class="name">GoalDao$Subclass4$auxiliary$Hcu5rWuI</td>
+  </tr>
+  <tr>
+    <td class="name">GoalDao$Subclass4$auxiliary$kpI4IkjT</td>
+  </tr>
+  <tr>
+    <td class="name">GoalDao$Subclass4$auxiliary$x2o9BaS9</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.financeapp.data
+&nbsp;
+&nbsp;import androidx.room.*
+&nbsp;import kotlinx.coroutines.flow.Flow
+&nbsp;
+&nbsp;@Dao
+&nbsp;interface GoalDao {
+&nbsp;    @Insert(onConflict = OnConflictStrategy.REPLACE)
+&nbsp;    suspend fun insert(goal: Goal)
+&nbsp;
+&nbsp;    @Update
+&nbsp;    suspend fun update(goal: Goal)
+&nbsp;
+&nbsp;    @Delete
+&nbsp;    suspend fun delete(goal: Goal)
+&nbsp;
+&nbsp;    @Query(&quot;SELECT * FROM goals ORDER BY createdAt DESC&quot;)
+&nbsp;    fun getAllGoals(): Flow&lt;List&lt;Goal&gt;&gt;
+&nbsp;
+&nbsp;    @Query(&quot;UPDATE goals SET currentAmount = currentAmount + :amount WHERE id = :goalId&quot;)
+&nbsp;    suspend fun addToGoal(goalId: Long, amount: Long)
+&nbsp;
+&nbsp;    @Query(&quot;SELECT * FROM goals&quot;)
+&nbsp;    suspend fun getAllGoalsOnce(): List&lt;Goal&gt;
+&nbsp;
+&nbsp;    @Query(&quot;DELETE FROM goals&quot;)
+&nbsp;    suspend fun deleteAll()
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-08 19:15</div>
+</div>
+</body>
+</html>
