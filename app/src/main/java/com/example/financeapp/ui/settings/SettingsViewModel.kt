@@ -16,12 +16,13 @@ data class SettingsUiState(
     val message: String? = null
 )
 
-class SettingsViewModel(private val db: AppDatabase) : ViewModel() {
+class SettingsViewModel(
+    private val db: AppDatabase,
+    private val backupManager: BackupManager = BackupManager(db)  // dependency injection
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState
-
-    private val backupManager = BackupManager(db)
 
     fun exportBackup(context: Context, uri: Uri) {
         viewModelScope.launch {

@@ -34,6 +34,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 <th class="coverageStat 
 ">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
   Line, %
 </th>
 </tr>
@@ -41,18 +45,18 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">RemindersViewModel</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/4)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/13)
+    (17/17)
   </span>
 </td>
 </tr>
@@ -60,18 +64,26 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">RemindersViewModel$addReminder$1</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/6)
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
   </span>
 </td>
   </tr>
@@ -79,18 +91,26 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">RemindersViewModel$deleteReminder$1</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
   </span>
 </td>
   </tr>
@@ -98,18 +118,26 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">RemindersViewModel$toggleReminder$1</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/1)
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
   </span>
 </td>
   </tr>
@@ -128,7 +156,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/1)
+    (0/2)
   </span>
 </td>
   </tr>
@@ -136,18 +164,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    87,5%
   </span>
   <span class="absValue">
-    (0/8)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/22)
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93,5%
+  </span>
+  <span class="absValue">
+    (29/31)
   </span>
 </td>
 </tr>
@@ -175,20 +211,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    val categories: List&lt;Category&gt; = emptyList()
 &nbsp;)
 &nbsp;
-&nbsp;class RemindersViewModel(
-<b class="nc">&nbsp;    private val reminderDao: ReminderDao,</b>
-<b class="nc">&nbsp;    private val categoryDao: CategoryDao</b>
-<b class="nc">&nbsp;) : ViewModel() {</b>
+<b class="fc">&nbsp;class RemindersViewModel(</b>
+<b class="fc">&nbsp;    private val reminderDao: ReminderDao,</b>
+<b class="fc">&nbsp;    private val categoryDao: CategoryDao</b>
+<b class="fc">&nbsp;) : ViewModel() {</b>
 &nbsp;
-<b class="nc">&nbsp;    val uiState: StateFlow&lt;RemindersUiState&gt; = combine(</b>
-<b class="nc">&nbsp;        reminderDao.getAllReminders(),</b>
-<b class="nc">&nbsp;        categoryDao.getAllCategories()</b>
-&nbsp;    ) { reminders, categories -&gt;
+<b class="fc">&nbsp;    val uiState: StateFlow&lt;RemindersUiState&gt; = combine(</b>
+<b class="fc">&nbsp;        reminderDao.getAllReminders(),</b>
+<b class="fc">&nbsp;        categoryDao.getAllCategories()</b>
+<b class="nc">&nbsp;    ) { reminders, categories -&gt;</b>
 <b class="nc">&nbsp;        RemindersUiState(reminders = reminders, categories = categories)</b>
-<b class="nc">&nbsp;    }.stateIn(</b>
-<b class="nc">&nbsp;        scope = viewModelScope,</b>
-<b class="nc">&nbsp;        started = SharingStarted.WhileSubscribed(5000),</b>
-<b class="nc">&nbsp;        initialValue = RemindersUiState()</b>
+<b class="fc">&nbsp;    }.stateIn(</b>
+<b class="fc">&nbsp;        scope = viewModelScope,</b>
+<b class="fc">&nbsp;        started = SharingStarted.WhileSubscribed(5000),</b>
+<b class="fc">&nbsp;        initialValue = RemindersUiState()</b>
 &nbsp;    )
 &nbsp;
 &nbsp;    fun addReminder(
@@ -197,27 +233,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;        categoryId: Long?,
 &nbsp;        dayOfMonth: Int
 &nbsp;    ) {
-<b class="nc">&nbsp;        viewModelScope.launch {</b>
-<b class="nc">&nbsp;            reminderDao.insert(</b>
-<b class="nc">&nbsp;                Reminder(</b>
-<b class="nc">&nbsp;                    title = title,</b>
-<b class="nc">&nbsp;                    amount = amount,</b>
-<b class="nc">&nbsp;                    categoryId = categoryId,</b>
-<b class="nc">&nbsp;                    dayOfMonth = dayOfMonth</b>
+<b class="fc">&nbsp;        viewModelScope.launch {</b>
+<b class="pc">&nbsp;            reminderDao.insert(</b>
+<b class="fc">&nbsp;                Reminder(</b>
+<b class="fc">&nbsp;                    title = title,</b>
+<b class="fc">&nbsp;                    amount = amount,</b>
+<b class="fc">&nbsp;                    categoryId = categoryId,</b>
+<b class="fc">&nbsp;                    dayOfMonth = dayOfMonth</b>
 &nbsp;                )
 &nbsp;            )
-&nbsp;        }
-&nbsp;    }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;    }</b>
 &nbsp;
 &nbsp;    fun toggleReminder(reminder: Reminder) {
-<b class="nc">&nbsp;        viewModelScope.launch {</b>
-<b class="nc">&nbsp;            reminderDao.update(reminder.copy(isActive = !reminder.isActive))</b>
-&nbsp;        }
-&nbsp;    }
+<b class="fc">&nbsp;        viewModelScope.launch {</b>
+<b class="pc">&nbsp;            reminderDao.update(reminder.copy(isActive = !reminder.isActive))</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;    }</b>
 &nbsp;
 &nbsp;    fun deleteReminder(reminder: Reminder) {
-<b class="nc">&nbsp;        viewModelScope.launch { reminderDao.delete(reminder) }</b>
-&nbsp;    }
+<b class="pc">&nbsp;        viewModelScope.launch { reminderDao.delete(reminder) }</b>
+<b class="fc">&nbsp;    }</b>
 &nbsp;}
 &nbsp;
 &nbsp;class RemindersViewModelFactory(
@@ -252,7 +288,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 20:15</div>
+    <div style="float:right;">generated on 2026-06-08 20:50</div>
 </div>
 </body>
 </html>

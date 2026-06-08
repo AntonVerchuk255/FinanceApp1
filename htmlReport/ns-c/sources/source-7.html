@@ -45,18 +45,18 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">SettingsViewModel</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    75%
   </span>
   <span class="absValue">
-    (0/4)
+    (3/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    75%
   </span>
   <span class="absValue">
-    (0/7)
+    (9/12)
   </span>
 </td>
 </tr>
@@ -64,26 +64,26 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">SettingsViewModel$exportBackup$1</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    33,3%
   </span>
   <span class="absValue">
-    (0/4)
+    (2/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    85,7%
   </span>
   <span class="absValue">
-    (0/5)
+    (6/7)
   </span>
 </td>
   </tr>
@@ -91,26 +91,26 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">SettingsViewModel$importBackup$1</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/4)
+    (3/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/5)
+    (7/7)
   </span>
 </td>
   </tr>
@@ -118,26 +118,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    83,3%
   </span>
   <span class="absValue">
-    (0/6)
+    (5/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    41,7%
   </span>
   <span class="absValue">
-    (0/8)
+    (5/12)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    84,6%
   </span>
   <span class="absValue">
-    (0/17)
+    (22/26)
   </span>
 </td>
 </tr>
@@ -166,39 +166,40 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    val message: String? = null
 &nbsp;)
 &nbsp;
-<b class="nc">&nbsp;class SettingsViewModel(private val db: AppDatabase) : ViewModel() {</b>
+&nbsp;class SettingsViewModel(
+<b class="fc">&nbsp;    private val db: AppDatabase,</b>
+<b class="fc">&nbsp;    private val backupManager: BackupManager = BackupManager(db)  // dependency injection</b>
+<b class="fc">&nbsp;) : ViewModel() {</b>
 &nbsp;
-<b class="nc">&nbsp;    private val _uiState = MutableStateFlow(SettingsUiState())</b>
-<b class="nc">&nbsp;    val uiState: StateFlow&lt;SettingsUiState&gt; = _uiState</b>
-&nbsp;
-<b class="nc">&nbsp;    private val backupManager = BackupManager(db)</b>
+<b class="fc">&nbsp;    private val _uiState = MutableStateFlow(SettingsUiState())</b>
+<b class="fc">&nbsp;    val uiState: StateFlow&lt;SettingsUiState&gt; = _uiState</b>
 &nbsp;
 &nbsp;    fun exportBackup(context: Context, uri: Uri) {
-<b class="nc">&nbsp;        viewModelScope.launch {</b>
-<b class="nc">&nbsp;            _uiState.value = SettingsUiState(isLoading = true)</b>
-<b class="nc">&nbsp;            val result = backupManager.exportBackup(context, uri)</b>
-<b class="nc">&nbsp;            _uiState.value = SettingsUiState(</b>
-<b class="nc">&nbsp;                message = if (result.isSuccess) &quot;Резервная копия сохранена&quot;</b>
+<b class="fc">&nbsp;        viewModelScope.launch {</b>
+<b class="fc">&nbsp;            _uiState.value = SettingsUiState(isLoading = true)</b>
+<b class="pc">&nbsp;            val result = backupManager.exportBackup(context, uri)</b>
+<b class="fc">&nbsp;            _uiState.value = SettingsUiState(</b>
+<b class="pc">&nbsp;                message = if (result.isSuccess) &quot;Резервная копия сохранена&quot;</b>
 <b class="nc">&nbsp;                else &quot;Ошибка: ${result.exceptionOrNull()?.message}&quot;</b>
 &nbsp;            )
-&nbsp;        }
-&nbsp;    }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;    }</b>
 &nbsp;
 &nbsp;    fun importBackup(context: Context, uri: Uri) {
-<b class="nc">&nbsp;        viewModelScope.launch {</b>
-<b class="nc">&nbsp;            _uiState.value = SettingsUiState(isLoading = true)</b>
-<b class="nc">&nbsp;            val result = backupManager.importBackup(context, uri)</b>
-<b class="nc">&nbsp;            _uiState.value = SettingsUiState(</b>
-<b class="nc">&nbsp;                message = if (result.isSuccess) &quot;Данные восстановлены&quot;</b>
-<b class="nc">&nbsp;                else &quot;Ошибка: ${result.exceptionOrNull()?.message}&quot;</b>
+<b class="fc">&nbsp;        viewModelScope.launch {</b>
+<b class="fc">&nbsp;            _uiState.value = SettingsUiState(isLoading = true)</b>
+<b class="pc">&nbsp;            val result = backupManager.importBackup(context, uri)</b>
+<b class="fc">&nbsp;            _uiState.value = SettingsUiState(</b>
+<b class="pc">&nbsp;                message = if (result.isSuccess) &quot;Данные восстановлены&quot;</b>
+<b class="pc">&nbsp;                else &quot;Ошибка: ${result.exceptionOrNull()?.message}&quot;</b>
 &nbsp;            )
-&nbsp;        }
-&nbsp;    }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;    }</b>
 &nbsp;
 &nbsp;    fun clearMessage() {
 <b class="nc">&nbsp;        _uiState.value = _uiState.value.copy(message = null)</b>
-&nbsp;    }
-&nbsp;}
+<b class="nc">&nbsp;    }</b>
+<b class="nc">&nbsp;}</b>
 &nbsp;
 &nbsp;class SettingsViewModelFactory(
 &nbsp;    private val db: AppDatabase
@@ -231,7 +232,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2026-06-08 20:15</div>
+    <div style="float:right;">generated on 2026-06-08 20:50</div>
 </div>
 </body>
 </html>
